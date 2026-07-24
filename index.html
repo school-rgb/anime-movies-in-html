@@ -41,7 +41,7 @@
     .logo {
       font-size: 1.4rem;
       font-weight: 800;
-      color: #ff6600; /* Updated to Orange */
+      color: #ff6600;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -94,8 +94,8 @@
     }
 
     .search-btn {
-      background-color: #e50914;
-      border: 1px solid #e50914;
+      background-color: #ff6600;
+      border: 1px solid #ff6600;
       color: #fff;
       padding: 9px 18px;
       border-radius: 0 4px 4px 0;
@@ -103,6 +103,103 @@
       font-family: inherit;
       font-weight: 700;
       font-size: 0.9rem;
+    }
+
+    /* Disclaimer / Content Advisory Modal */
+    .disclaimer-backdrop {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.92);
+      z-index: 20000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .disclaimer-box {
+      background-color: #18181c;
+      border: 1px solid #3a3a42;
+      border-radius: 8px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    .disclaimer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2a2a30;
+      background-color: #141417;
+    }
+
+    .disclaimer-header h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: #ff6600;
+      font-weight: 800;
+    }
+
+    .disclaimer-content {
+      padding: 20px 24px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #d0d0d8;
+      flex: 1;
+    }
+
+    .disclaimer-content h3 {
+      color: #ffffff;
+      font-size: 1.05rem;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #2a2a30;
+      padding-bottom: 4px;
+    }
+
+    .disclaimer-content p {
+      margin: 0 0 12px 0;
+    }
+
+    .disclaimer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #2a2a30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #121215;
+    }
+
+    .disclaimer-scroll-hint {
+      font-size: 0.82rem;
+      color: #ffaa33;
+      font-weight: 600;
+    }
+
+    .btn-disclaimer-ok {
+      background-color: #ff6600;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-disclaimer-ok:disabled {
+      background-color: #3a3a42;
+      color: #888888;
+      cursor: not-allowed;
+      opacity: 0.6;
     }
 
     /* Huge Featured Hero Banner */
@@ -114,7 +211,7 @@
       background-position: center 20%;
       display: flex;
       align-items: flex-end;
-      border-bottom: 1px solid #ff6600;
+      border-bottom: 1px solid #2a2a30;
       margin-bottom: 30px;
       transition: background-image 0.5s ease-in-out;
     }
@@ -122,7 +219,7 @@
     .huge-hero-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(0deg, #ff6600 0%, rgba(15, 15, 18, 0.75) 50%, rgba(15, 15, 18, 0.3) 100%);
+      background: linear-gradient(0deg, #0f0f12 0%, rgba(15, 15, 18, 0.75) 50%, rgba(15, 15, 18, 0.3) 100%);
     }
 
     .huge-hero-content {
@@ -139,7 +236,7 @@
 
     .hero-tag {
       display: inline-block;
-      background-color: #e50914;
+      background-color: #ff6600;
       color: #fff;
       font-size: 0.75rem;
       font-weight: 800;
@@ -188,8 +285,8 @@
     }
 
     .btn-hero-watch {
-      background-color: #e50914;
-      color: #ff6600;
+      background-color: #ff6600;
+      color: #ffffff;
       border: none;
       padding: 11px 28px;
       border-radius: 4px;
@@ -200,7 +297,7 @@
     }
 
     .btn-hero-watch:hover {
-      background-color: #ff0f1a;
+      background-color: #ff8800;
     }
 
     .btn-hero-info {
@@ -243,7 +340,7 @@
       font-size: 1.25rem;
       font-weight: 800;
       margin: 0;
-      color: #ff6600;
+      color: #ffffff;
       letter-spacing: 0.3px;
     }
 
@@ -347,6 +444,7 @@
       display: inline-block;
     }
 
+    .badge-mature { background-color: #381216; color: #ff4d4d; }
     .badge-teen { background-color: #332412; color: #ffaa33; }
     .badge-general { background-color: #122c38; color: #33ccff; }
 
@@ -523,7 +621,7 @@
     }
 
     .btn-play {
-      background-color: #e50914;
+      background-color: #ff6600;
       color: #fff;
       border: none;
       padding: 12px 28px;
@@ -642,8 +740,8 @@
     }
 
     button.server-btn.active {
-      background-color: #e50914;
-      border-color: #e50914;
+      background-color: #ff6600;
+      border-color: #ff6600;
     }
 
     .sidebar {
@@ -712,7 +810,7 @@
     }
 
     .episode-item.active {
-      border-color: #e50914;
+      border-color: #ff6600;
       background-color: #28282d;
     }
 
@@ -734,7 +832,7 @@
     .episode-number {
       font-size: 0.8rem;
       font-weight: 700;
-      color: #e50914;
+      color: #ff6600;
     }
 
     .episode-name {
@@ -770,6 +868,35 @@
   </style>
 </head>
 <body>
+
+  <div id="disclaimer-backdrop" class="disclaimer-backdrop">
+    <div class="disclaimer-box">
+      <div class="disclaimer-header">
+        <h2>Content Rating & Advisory Notice</h2>
+      </div>
+      <div id="disclaimer-content" class="disclaimer-content" onscroll="handleDisclaimerScroll()">
+        <p>Welcome to <strong>AnimeHub</strong>! Please take a moment to review our content rating guidelines before proceeding. Anime titles vary widely in themes, age-appropriateness, and parental guidance levels.</p>
+
+        <h3>General & TV-G / PG (All Ages)</h3>
+        <p>Suitable for general audiences. Contains minimal or light action, mild humor, and no inappropriate themes or strong language.</p>
+
+        <h3>PG-13 / TV-14 (Parents Strongly Cautioned)</h3>
+        <p>May contain content unsuitable for children under 13 or 14 years old. Themes may include moderate violence, mild profanity, suggestive dialogue, or fantasy battle sequences.</p>
+
+        <h3>Rated R / TV-MA (Mature Audiences)</h3>
+        <p>Intended for mature audiences (ages 17+ or 18+). May contain intense graphic violence, strong coarse language, blood/gore, psychological horror, or explicit themes.</p>
+
+        <h3>NC-17 / Adult Content</h3>
+        <p>Strictly restricted to adults aged 18 and older. Contains explicit adult themes. Note that adult/explicit content is automatically filtered out on AnimeHub.</p>
+
+        <p><em>By clicking "I Understand & Agree" below, you acknowledge that you have read and understood these content ratings and agree to view content appropriate for your age group or jurisdiction.</em></p>
+      </div>
+      <div class="disclaimer-footer">
+        <span id="disclaimer-scroll-hint" class="disclaimer-scroll-hint">Scroll to the bottom to acknowledge</span>
+        <button id="disclaimer-ok-btn" class="btn-disclaimer-ok" onclick="acceptDisclaimer()" disabled>I Understand & Agree</button>
+      </div>
+    </div>
+  </div>
 
   <header>
     <div class="nav-left">
@@ -877,6 +1004,39 @@
     const API_KEY = '3a73619bbb8fc6d47742d1b5b2b707b5';
     const BASE = 'https://api.themoviedb.org/3';
 
+    /* Disclaimer Logic */
+    function checkDisclaimer() {
+      const accepted = localStorage.getItem('disclaimerAccepted');
+      const modal = document.getElementById('disclaimer-backdrop');
+      if (accepted === 'true') {
+        modal.style.display = 'none';
+      } else {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function handleDisclaimerScroll() {
+      const content = document.getElementById('disclaimer-content');
+      const okBtn = document.getElementById('disclaimer-ok-btn');
+      const hint = document.getElementById('disclaimer-scroll-hint');
+
+      if (content.scrollTop + content.clientHeight >= content.scrollHeight - 15) {
+        okBtn.disabled = false;
+        hint.innerText = 'Thank you for reading!';
+        hint.style.color = '#4CAF50';
+      }
+    }
+
+    function acceptDisclaimer() {
+      localStorage.setItem('disclaimerAccepted', 'true');
+      const modal = document.getElementById('disclaimer-backdrop');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    checkDisclaimer();
+    
     // Categories for Home View
     const CATEGORIES = [
       { name: "Popular This Season", type: "tv", endpoint: "discover/tv", params: "&with_genres=16&with_origin_country=JP&sort_by=popularity.desc&first_air_date.gte=2024-01-01" },
@@ -898,8 +1058,7 @@
 
     const BACKDROP = p => p ? `https://image.tmdb.org/t/p/w1280${p}` : 'https://via.placeholder.com/1280x720?text=No+Image';
 
-    // Only allow TV-G, TV-PG, TV-14, PG, PG-13. Exclude Rated R, TV-MA, NC-17, Adult content
-    const EXCLUDED_RATINGS = ['R', 'NC-17', 'TV-MA', 'MA', '18+'];
+    const EXCLUDED_RATINGS = ['R', 'NC-17'];
     const TITLE_BLACKLIST = ['bad anime title 1', 'example title to hide'];
 
     const TV_SOURCES = [
@@ -987,7 +1146,7 @@
       } catch (e) {
         console.error('Error fetching category:', e);
         if (rowContainer) {
-          rowContainer.innerHTML = '<div style="color: #e50914; font-size: 0.85rem;">Failed to load items.</div>';
+          rowContainer.innerHTML = '<div style="color: #ff6600; font-size: 0.85rem;">Failed to load items.</div>';
         }
       }
     }
@@ -1114,7 +1273,9 @@
       const text = ratingText.toUpperCase();
       let badgeClass = 'badge-general';
 
-      if (text.includes('14') || text.includes('13') || text.includes('PG-13')) {
+      if (text.includes('MA') || text.includes('R') || text.includes('18')) {
+        badgeClass = 'badge-mature';
+      } else if (text.includes('14') || text.includes('13') || text.includes('PG-13')) {
         badgeClass = 'badge-teen';
       }
 
@@ -1193,7 +1354,7 @@
       document.getElementById('hero-poster-img').src = initialPosterUrl;
       document.getElementById('hero-title-text').innerText = movie.title || movie.name || movie.original_title;
       document.getElementById('hero-rating-text').innerText = `★ ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}`;
-      document.getElementById('hero-badge-container').innerHTML = createRatingBadgeHtml(movie._contentRating || 'PG-13');
+      document.getElementById('hero-badge-container').innerHTML = createRatingBadgeHtml(movie._contentRating || (movie.adult ? '18+' : 'PG-13'));
       document.getElementById('hero-description-text').innerText = movie.overview || 'No overview available.';
       
       document.getElementById('hero-seasons-badge').innerText = 'Movie';
