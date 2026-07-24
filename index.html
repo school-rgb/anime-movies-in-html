@@ -105,6 +105,103 @@
       font-size: 0.9rem;
     }
 
+    /* Disclaimer / Content Advisory Modal */
+    .disclaimer-backdrop {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.92);
+      z-index: 20000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .disclaimer-box {
+      background-color: #18181c;
+      border: 1px solid #3a3a42;
+      border-radius: 8px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    .disclaimer-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #2a2a30;
+      background-color: #141417;
+    }
+
+    .disclaimer-header h2 {
+      margin: 0;
+      font-size: 1.35rem;
+      color: #ff6600;
+      font-weight: 800;
+    }
+
+    .disclaimer-content {
+      padding: 20px 24px;
+      overflow-y: auto;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #d0d0d8;
+      flex: 1;
+    }
+
+    .disclaimer-content h3 {
+      color: #ffffff;
+      font-size: 1.05rem;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #2a2a30;
+      padding-bottom: 4px;
+    }
+
+    .disclaimer-content p {
+      margin: 0 0 12px 0;
+    }
+
+    .disclaimer-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #2a2a30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #121215;
+    }
+
+    .disclaimer-scroll-hint {
+      font-size: 0.82rem;
+      color: #ffaa33;
+      font-weight: 600;
+    }
+
+    .btn-disclaimer-ok {
+      background-color: #ff6600;
+      color: #ffffff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-disclaimer-ok:disabled {
+      background-color: #3a3a42;
+      color: #888888;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
     /* Huge Featured Hero Banner */
     .huge-hero-container {
       position: relative;
@@ -256,6 +353,7 @@
       scroll-behavior: smooth;
       scrollbar-width: thin;
       scrollbar-color: #2a2a30 #121215;
+      align-items: flex-start;
     }
 
     .row-scroll-container::-webkit-scrollbar {
@@ -276,10 +374,12 @@
       background: #3a3a42;
     }
 
-    /* Single Card Styling for Row */
+    /* Single Card Styling for Row - Fixed Poster Sizes */
     .card {
+      width: 185px;
       min-width: 185px;
       max-width: 185px;
+      height: 335px;
       background-color: #18181c;
       border: 1px solid #2a2a30;
       border-radius: 6px;
@@ -297,19 +397,19 @@
     }
 
     .card-thumbnail-wrapper {
-      width: 100%;
-      padding-top: 150%;
+      width: 185px;
+      height: 260px;
       position: relative;
       background-color: #121215;
+      flex-shrink: 0;
+      overflow: hidden;
     }
 
     .card-thumbnail-wrapper img {
-      position: absolute;
-      top: 0;
-      left: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .card-info {
@@ -317,6 +417,8 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      flex: 1;
+      justify-content: space-between;
     }
 
     .card-title {
@@ -414,6 +516,7 @@
       border-radius: 4px;
       border: 1px solid #2a2a30;
       flex-shrink: 0;
+      background-color: #121215;
     }
 
     .hero-text {
@@ -772,6 +875,35 @@
 </head>
 <body>
 
+  <div id="disclaimer-backdrop" class="disclaimer-backdrop">
+    <div class="disclaimer-box">
+      <div class="disclaimer-header">
+        <h2>Content Rating & Advisory Notice</h2>
+      </div>
+      <div id="disclaimer-content" class="disclaimer-content" onscroll="handleDisclaimerScroll()">
+        <p>Welcome to <strong>AnimeHub</strong>! Please take a moment to review our content rating guidelines before proceeding. Anime titles vary widely in themes, age-appropriateness, and parental guidance levels.</p>
+
+        <h3>General & TV-G / PG (All Ages)</h3>
+        <p>Suitable for general audiences. Contains minimal or light action, mild humor, and no inappropriate themes or strong language.</p>
+
+        <h3>PG-13 / TV-14 (Parents Strongly Cautioned)</h3>
+        <p>May contain content unsuitable for children under 13 or 14 years old. Themes may include moderate violence, mild profanity, suggestive dialogue, or fantasy battle sequences.</p>
+
+        <h3>Rated R / TV-MA (Mature Audiences)</h3>
+        <p>Intended for mature audiences (ages 17+ or 18+). May contain intense graphic violence, strong coarse language, blood/gore, psychological horror, or explicit themes.</p>
+
+        <h3>NC-17 / Adult Content</h3>
+        <p>Strictly restricted to adults aged 18 and older. Contains explicit adult themes. Note that adult/explicit content is automatically filtered out on AnimeHub.</p>
+
+        <p><em>By clicking "I Understand & Agree" below, you acknowledge that you have read and understood these content ratings and agree to view content appropriate for your age group or jurisdiction.</em></p>
+      </div>
+      <div class="disclaimer-footer">
+        <span id="disclaimer-scroll-hint" class="disclaimer-scroll-hint">Scroll to the bottom to acknowledge</span>
+        <button id="disclaimer-ok-btn" class="btn-disclaimer-ok" onclick="acceptDisclaimer()" disabled>I Understand & Agree</button>
+      </div>
+    </div>
+  </div>
+
   <header>
     <div class="nav-left">
       <div class="logo" onclick="loadHomePage()">
@@ -877,6 +1009,39 @@
   <script>
     const API_KEY = '3a73619bbb8fc6d47742d1b5b2b707b5';
     const BASE = 'https://api.themoviedb.org/3';
+
+    /* Disclaimer Logic */
+    function checkDisclaimer() {
+      const accepted = localStorage.getItem('disclaimerAccepted');
+      const modal = document.getElementById('disclaimer-backdrop');
+      if (accepted === 'true') {
+        modal.style.display = 'none';
+      } else {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function handleDisclaimerScroll() {
+      const content = document.getElementById('disclaimer-content');
+      const okBtn = document.getElementById('disclaimer-ok-btn');
+      const hint = document.getElementById('disclaimer-scroll-hint');
+
+      if (content.scrollTop + content.clientHeight >= content.scrollHeight - 15) {
+        okBtn.disabled = false;
+        hint.innerText = 'Thank you for reading!';
+        hint.style.color = '#4CAF50';
+      }
+    }
+
+    function acceptDisclaimer() {
+      localStorage.setItem('disclaimerAccepted', 'true');
+      const modal = document.getElementById('disclaimer-backdrop');
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    checkDisclaimer();
     
     // Categories for Home View
     const CATEGORIES = [
@@ -892,12 +1057,50 @@
 
     const ANILIST_POSTER_API = id => `https://ani.pm/api/anime/poster?anilistId=${id}`;
 
-    const POSTER = (p, anilistId = null) => {
-      if (anilistId) return ANILIST_POSTER_API(anilistId);
-      return p ? `https://image.tmdb.org/t/p/w500${p}` : 'https://via.placeholder.com/500x750?text=No+Poster';
-    };
+    /* Image Fallback System */
+    function getInitialLetterPlaceholder(title, isBanner = false) {
+      const name = title || 'Anime';
+      const initial = name.trim().charAt(0).toUpperCase() || '?';
+      const width = isBanner ? 1280 : 500;
+      const height = isBanner ? 720 : 750;
+      const fontSize = isBanner ? 220 : 180;
 
-    const BACKDROP = p => p ? `https://image.tmdb.org/t/p/w1280${p}` : 'https://via.placeholder.com/1280x720?text=No+Image';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <rect width="100%" height="100%" fill="#18181c"/>
+        <text x="50%" y="50%" dominant-baseline="central" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="${fontSize}" font-weight="900" fill="#ff6600">${initial}</text>
+      </svg>`;
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function getPosterUrl(item) {
+      if (item._anilistId) {
+        return ANILIST_POSTER_API(item._anilistId);
+      }
+      if (item.poster_path) {
+        return `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+      }
+      // Fallback to banner if poster missing
+      if (item.backdrop_path) {
+        return `https://image.tmdb.org/t/p/w780${item.backdrop_path}`;
+      }
+      // Fallback to first letter of title if neither exists
+      return getInitialLetterPlaceholder(item.name || item.title);
+    }
+
+    function getBannerUrl(item) {
+      if (item.backdrop_path) {
+        return `https://image.tmdb.org/t/p/w1280${item.backdrop_path}`;
+      }
+      // Fallback to poster if banner missing
+      if (item._anilistId) {
+        return ANILIST_POSTER_API(item._anilistId);
+      }
+      if (item.poster_path) {
+        return `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+      }
+      // Fallback to first letter of title if neither exists
+      return getInitialLetterPlaceholder(item.name || item.title, true);
+    }
 
     const EXCLUDED_RATINGS = ['R', 'NC-17', 'TV-MA'];
     const TITLE_BLACKLIST = ['bad anime title 1', 'example title to hide'];
@@ -1005,10 +1208,11 @@
         card.onclick = () => item._isMovie ? openMovieHeroModal(item) : openHeroModal(item);
 
         const badgeHtml = createRatingBadgeHtml(item._contentRating);
+        const posterSrc = getPosterUrl(item);
 
         card.innerHTML = `
           <div class="card-thumbnail-wrapper">
-            <img src="${POSTER(item.poster_path)}" alt="${item.name}" loading="lazy" />
+            <img src="${posterSrc}" alt="${item.name}" loading="lazy" />
           </div>
           <div class="card-info">
             <h3 class="card-title">${item.name}</h3>
@@ -1025,12 +1229,13 @@
     function updateHugeHeroBanner(anime) {
       featuredAnime = anime;
       const heroContainer = document.getElementById('huge-hero');
-      heroContainer.style.backgroundImage = `url('${BACKDROP(anime.backdrop_path)}')`;
+      const bannerSrc = getBannerUrl(anime);
+      heroContainer.style.backgroundImage = `url('${bannerSrc}')`;
 
       document.getElementById('huge-hero-title').innerText = anime.name;
       document.getElementById('huge-hero-rating').innerText = `★ ${anime.vote_average ? anime.vote_average.toFixed(1) : 'N/A'}`;
       document.getElementById('huge-hero-badge').innerHTML = createRatingBadgeHtml(anime._contentRating || 'TV-14');
-      document.getElementById('huge-hero-desc').innerText = anime.overview || 'Explore details and streaming availability on AnimeHub.';
+      document.getElementById('huge-hero-desc').innerText = anime.overview || 'Discover top trending series, films, and favorites right here on AnimeHub.';
     }
 
     function openFeaturedWatch() {
@@ -1102,10 +1307,10 @@
       if (stillPath) {
         return `https://image.tmdb.org/t/p/w300${stillPath}`;
       }
-      if (currentAnime && currentAnime.backdrop_path) {
-        return BACKDROP(currentAnime.backdrop_path);
+      if (currentAnime) {
+        return getBannerUrl(currentAnime);
       }
-      return 'https://via.placeholder.com/300x169?text=No+Preview';
+      return getInitialLetterPlaceholder('Episode', true);
     }
 
     function createRatingBadgeHtml(ratingText) {
@@ -1155,8 +1360,8 @@
       currentAnime = anime;
       selectedMovie = null;
 
-      const bannerUrl = BACKDROP(anime.backdrop_path);
-      const initialPosterUrl = POSTER(anime.poster_path);
+      const bannerUrl = getBannerUrl(anime);
+      const initialPosterUrl = getPosterUrl(anime);
 
       document.getElementById('hero-banner-bg').style.backgroundImage = `url('${bannerUrl}')`;
       document.getElementById('hero-poster-img').src = initialPosterUrl;
@@ -1177,7 +1382,7 @@
       fetchAniListId(anime.name).then(aniId => {
         if (aniId) {
           anime._anilistId = aniId;
-          document.getElementById('hero-poster-img').src = POSTER(anime.poster_path, aniId);
+          document.getElementById('hero-poster-img').src = getPosterUrl(anime);
         }
       });
 
@@ -1188,8 +1393,8 @@
     function openMovieHeroModal(movie) {
       selectedMovie = movie;
 
-      const bannerUrl = BACKDROP(movie.backdrop_path);
-      const initialPosterUrl = POSTER(movie.poster_path);
+      const bannerUrl = getBannerUrl(movie);
+      const initialPosterUrl = getPosterUrl(movie);
 
       document.getElementById('hero-banner-bg').style.backgroundImage = `url('${bannerUrl}')`;
       document.getElementById('hero-poster-img').src = initialPosterUrl;
@@ -1249,7 +1454,7 @@
             card.className = 'movie-card';
             card.onclick = () => openMovieHeroModal(movie);
             card.innerHTML = `
-              <img src="${POSTER(movie.poster_path)}" alt="${movie.title}" />
+              <img src="${getPosterUrl(movie)}" alt="${movie.title}" />
               <div class="movie-card-title">${movie.title}</div>
             `;
             moviesList.appendChild(card);
@@ -1274,7 +1479,7 @@
 
       document.getElementById('info-title').innerText = currentAnime.name;
       document.getElementById('info-description').innerText = currentAnime.overview || 'No description available.';
-      document.getElementById('season-poster-img').src = POSTER(currentAnime.poster_path, currentAnime._anilistId);
+      document.getElementById('season-poster-img').src = getPosterUrl(currentAnime);
       document.querySelector('.sidebar').style.display = 'flex';
 
       document.getElementById('watch-modal').style.display = 'block';
@@ -1334,9 +1539,9 @@
       epListContainer.innerHTML = 'Loading episodes...';
 
       if (seasonDataMap[seasonNum] && seasonDataMap[seasonNum].poster_path) {
-        document.getElementById('season-poster-img').src = POSTER(seasonDataMap[seasonNum].poster_path);
+        document.getElementById('season-poster-img').src = `https://image.tmdb.org/t/p/w500${seasonDataMap[seasonNum].poster_path}`;
       } else {
-        document.getElementById('season-poster-img').src = POSTER(currentAnime.poster_path, currentAnime._anilistId);
+        document.getElementById('season-poster-img').src = getPosterUrl(currentAnime);
       }
 
       try {
