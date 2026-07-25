@@ -1226,8 +1226,10 @@
       { name: 'VidKing',     url: (id, s, e, isMovie) => isMovie ? `https://www.vidking.net/embed/movie/${id}` : `https://www.vidking.net/embed/tv/${id}/${s}/${e}` },
       { name: 'VidFast Pro',url: (id, s, e, isMovie) => isMovie ? `https://vidfast.pro/movie/${id}` : `https://vidfast.pro/tv/${id}/${s}/${e}` },
       { name: 'vidsrc',     url: (id, s, e, isMovie) => isMovie ? `https://vidsrc.to/embed/movie/${id}` : `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
-      { name: '2Embed',     url: (id, s, e, isMovie) => isMovie ? `https://www.2embed.cc/embed/${id}` : `https://www.2embed.cc/tv/${id}&s=${s}&e=${e}` },
-      { name: 'streamrip', url: (id, s, e, isMovie) => isMovie ? `https://streamrip.fun/embed/movie/${id}` : `https://streamrip.fun/embed/tv/${id}/${s}/${e}` }, 
+      { name: 'viduki',     url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/1/movie/${id}` : `https://viduki.net/1/tv/${id}/${s}/${e}` }, 
+      { name: 'viduki Multi Embeds',     url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/3/movie/${id}` : `https://viduki.net/3/tv/${id}/${s}/${e}` },
+      { name: 'viduki Premium ',     url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/4/movie/${id}` : `https://viduki.net/4/tv/${id}/${s}/${e}` },
+   
     ];
 
     let currentAnime = null;
