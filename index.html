@@ -883,6 +883,7 @@
     </div>
 
     <script>
+        // Added multiple alternative streaming services/servers
         const serversList = [
             { 
                 name: 'VidFast VC', 
@@ -1215,14 +1216,13 @@
             const query = `
                 query ($search: String) {
                     Page(page: 1, perPage: 16) {
-                        media(search: $search, type: ANIME, sort: POPULARITY_DESC, isAdult: false) {
+                        media(search: $search, type: ANIME, sort: POPULARITY_DESC) {
                             id
                             format
                             status
                             seasonYear
                             description
                             episodes
-                            isAdult
                             streamingEpisodes {
                                 title
                                 thumbnail
@@ -1255,18 +1255,16 @@
                 const animeList = data.data.Page.media;
                 targetContainer.innerHTML = ''; 
 
-                const filteredAnimeList = animeList.filter(anime => !anime.isAdult);
-
                 if (isSearchMode) {
-                    searchResultsCount.textContent = `(${filteredAnimeList.length} found)`;
+                    searchResultsCount.textContent = `(${animeList.length} found)`;
                 }
 
-                if (filteredAnimeList.length === 0) {
+                if (animeList.length === 0) {
                     targetContainer.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#888;">No anime found.</p>';
                     return;
                 }
 
-                const formattedList = filteredAnimeList.map(anime => ({
+                const formattedList = animeList.map(anime => ({
                     id: anime.id,
                     formatType: anime.format,
                     title: anime.title.english || anime.title.romaji,
@@ -1396,9 +1394,7 @@
 
         function loadActiveServerSource() {
             const selectedServer = serversList[currentActiveServerIndex];
-            
-            // Strictly check if formatType is 'MOVIE'
-            const isMovie = (currentFormatType === 'MOVIE');
+            const isMovie = currentFormatType === 'MOVIE';
             const seasonNum = 1; 
             
             const targetUrl = selectedServer.url(currentAnimeId, seasonNum, currentSelectedEpisode, isMovie);
