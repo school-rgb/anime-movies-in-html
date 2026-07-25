@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1225,7 +1226,8 @@
       { name: 'VidKing',     url: (id, s, e, isMovie) => isMovie ? `https://www.vidking.net/embed/movie/${id}` : `https://www.vidking.net/embed/tv/${id}/${s}/${e}` },
       { name: 'VidFast Pro',url: (id, s, e, isMovie) => isMovie ? `https://vidfast.pro/movie/${id}` : `https://vidfast.pro/tv/${id}/${s}/${e}` },
       { name: 'vidsrc',     url: (id, s, e, isMovie) => isMovie ? `https://vidsrc.to/embed/movie/${id}` : `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
-      { name: '2Embed',     url: (id, s, e, isMovie) => isMovie ? `https://www.2embed.cc/embed/${id}` : `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` }
+      { name: '2Embed',     url: (id, s, e, isMovie) => isMovie ? `https://www.2embed.cc/embed/${id}` : `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
+      { name: 'streamrip', url: (id, s, e, isMovie) => isMovie ? `https://streamrip.fun/movie/${id}` : `https://streamrip.fun/tv/${id}/${s}/${e}` }, 
     ];
 
     let currentAnime = null;
