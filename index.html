@@ -834,7 +834,7 @@
                         <iframe id="active-player-iframe" src="" allowfullscreen></iframe>
                     </div>
                     
-                    <div class="servers-bar-container" id="servers-bar">
+                    <div class="servers-bar-container" id="servers-bar" style="display:none;">
                         <span class="servers-bar-label">Servers:</span>
                     </div>
 
@@ -883,36 +883,20 @@
     </div>
 
     <script>
-        // Added multiple alternative streaming services/servers
+        const TMDB_POSTER_BASE = "https://image.tmdb.org/t/p/w500/";
+
+        function getPosterUrl(pathOrUrl) {
+            if (!pathOrUrl) return '';
+            if (pathOrUrl.startsWith('http')) return pathOrUrl;
+            return TMDB_POSTER_BASE + (pathOrUrl.startsWith('/') ? pathOrUrl.slice(1) : pathOrUrl);
+        }
+
+        // Updated Videasy Player Source configuration
         const serversList = [
             { 
-                name: 'VidFast VC', 
-                url: (id, s, e, isMovie) => isMovie ? `https://vidfast.vc/movie/${id}?autoPlay=true` : `https://vidfast.vc/tv/${id}/${s}/${e}?autoPlay=true` 
-            },
-            { 
-                name: 'VidLink',     
-                url: (id, s, e, isMovie) => isMovie ? `https://vidlink.pro/movie/${id}` : `https://vidlink.pro/tv/${id}/${s}/${e}` 
-            },
-           { 
-               name: 'VidFast Pro',
-               url: (id, s, e, isMovie) => isMovie ? `https://vidfast.pro/movie/${id}` : `https://vidfast.pro/tv/${id}/${s}/${e}` 
-           },
-           { 
-               name: 'vidsrc',     
-               url: (id, s, e, isMovie) => isMovie ? `https://vidsrc.to/embed/movie/${id}` : `https://vidsrc.to/embed/tv/${id}/${s}/${e}`  
-           },
-           { 
-              name: 'viduki',    
-              url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/1/movie/${id}` : `https://viduki.net/1/tv/${id}/${s}/${e}` 
-           }, 
-          { 
-              name: 'viduki Multi Embeds',     
-              url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/3/movie/${id}` : `https://viduki.net/3/tv/${id}/${s}/${e}` 
-          },
-         { 
-              name: 'viduki Premium ',     
-              url: (id, s, e, isMovie) => isMovie ? `https://viduki.net/4/movie/${id}` : `https://viduki.net/4/tv/${id}/${s}/${e}`  
-        },
+                name: 'Videasy', 
+                url: (id, s, e, isMovie) => isMovie ? `https://player.videasy.net/anime/${id}` : `https://player.videasy.net/anime/${id}/${e}` 
+            }
         ];
 
         let currentActiveServerIndex = 0;
@@ -997,7 +981,6 @@
 
         let currentActiveAnime = null;
 
-        // Navigation controls
         homeLogoBtn.addEventListener('click', () => {
             clearSearch();
             showView('home');
@@ -1042,7 +1025,6 @@
             window.scrollTo(0, 0);
         }
 
-        // SVG helper functions
         function getPlusSvg() {
             return `<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
         }
@@ -1053,7 +1035,7 @@
 
         function setupHeroBanner(anime) {
             featuredAnimeObj = anime;
-            heroBg.src = anime.bannerUrl || anime.coverUrl;
+            heroBg.src = anime.bannerUrl || getPosterUrl(anime.coverUrl);
             heroTitle.textContent = anime.title;
             heroFormat.textContent = anime.formatType;
             heroYear.textContent = anime.seasonYear || 'N/A';
@@ -1097,9 +1079,10 @@
             card.dataset.animeId = anime.id;
 
             const inList = isAnimeInList(anime.id);
+            const posterImageSrc = getPosterUrl(anime.coverUrl);
 
             card.innerHTML = `
-                <img src="${anime.coverUrl}" alt="${anime.title}">
+                <img src="${posterImageSrc}" alt="${anime.title}">
                 
                 <div class="card-actions-top-right">
                     <button class="btn-play" title="Play">
@@ -1134,7 +1117,7 @@
             card.addEventListener('click', () => {
                 currentActiveAnime = anime;
                 modalBannerImg.src = anime.bannerUrl;
-                modalCoverImg.src = anime.coverUrl;
+                modalCoverImg.src = getPosterUrl(anime.coverUrl);
                 modalTitleText.textContent = anime.title;
                 modalTypeText.textContent = anime.formatType;
                 modalStatusText.textContent = anime.status === 'RELEASING' ? 'Airing' : 'Completed';
