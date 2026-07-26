@@ -115,6 +115,51 @@
             pointer-events: none;
         }
 
+        /* Filter Toolbar Styling */
+        .filter-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            background-color: #111111;
+            border: 1px solid #222222;
+            padding: 15px 20px;
+            border-radius: 10px;
+            align-items: center;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-label {
+            font-size: 13px;
+            font-weight: bold;
+            color: #888888;
+            text-transform: uppercase;
+            margin-right: 5px;
+        }
+        .filter-btn {
+            background-color: #1a1a1a;
+            color: #cccccc;
+            border: 1px solid #333333;
+            border-radius: 16px;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+        }
+        .filter-btn:hover {
+            background-color: #262626;
+            color: #ffffff;
+        }
+        .filter-btn.active-filter {
+            background-color: #ffffff;
+            border-color: #ffffff;
+            color: #000000;
+        }
+
         /* Views management - Strictly separated sections */
         .view-section {
             display: none;
@@ -804,6 +849,22 @@
                 </div>
             </div>
 
+            <div class="filter-toolbar">
+                <div class="filter-group">
+                    <span class="filter-label">Format:</span>
+                    <button class="filter-btn active-filter" data-filter-type="format" data-filter-value="">All</button>
+                    <button class="filter-btn" data-filter-type="format" data-filter-value="TV">TV Show</button>
+                    <button class="filter-btn" data-filter-type="format" data-filter-value="MOVIE">Movie</button>
+                    <button class="filter-btn" data-filter-type="format" data-filter-value="OVA">OVA</button>
+                </div>
+                <div class="filter-group" style="margin-left: 20px;">
+                    <span class="filter-label">Status:</span>
+                    <button class="filter-btn active-filter" data-filter-type="status" data-filter-value="">All</button>
+                    <button class="filter-btn" data-filter-type="status" data-filter-value="RELEASING">Airing</button>
+                    <button class="filter-btn" data-filter-type="status" data-filter-value="FINISHED">Completed</button>
+                </div>
+            </div>
+
             <h2 class="section-title">Popular Shows</h2>
             <div id="anime-container" class="anime-grid">Loading anime list...</div>
         </div>
@@ -891,18 +952,26 @@
             return TMDB_POSTER_BASE + (pathOrUrl.startsWith('/') ? pathOrUrl.slice(1) : pathOrUrl);
         }
 
-        // Updated Videasy Player Source configuration
+        // Multiple Player Sources Configuration (Videasy & Vidlink)
         const serversList = [
             { 
                 name: 'Videasy', 
-                url: (id, s, e, isMovie) => isMovie ? `https://player.videasy.net/anime/${id}` : `https://player.videasy.net/anime/${id}/${e}` 
+                url: (id, s, e, isMovie, idMal) => isMovie ? `https://player.videasy.to/anime/${id}` : `https://player.videasy.to/anime/${id}/${e}` 
+            },
+            { 
+                name: 'Vidlink', 
+                url: (id, s, e, isMovie, idMal) => `https://vidlink.pro/anime/${idMal || id}/${e}/sub` 
             }
         ];
 
         let currentActiveServerIndex = 0;
         let currentAnimeId = null;
+        let currentAnimeMalId = null;
         let currentFormatType = null;
         let currentSelectedEpisode = 1;
+
+        let activeFormatFilter = '';
+        let activeStatusFilter = '';
 
         let savedAnimeList = JSON.parse(localStorage.getItem('myAnimeList')) || [];
 
@@ -946,6 +1015,7 @@
         const serversBar = document.getElementById('servers-bar');
 
         // Hero Banner Elements
+        const heroBanner = document.getElementById('hero-banner');
         const heroBg = document.getElementById('hero-bg');
         const heroTitle = document.getElementById('hero-title');
         const heroFormat = document.getElementById('hero-format');
@@ -1034,6 +1104,11 @@
         }
 
         function setupHeroBanner(anime) {
+            if (!anime) {
+                heroBanner.style.display = 'none';
+                return;
+            }
+            heroBanner.style.display = 'flex';
             featuredAnimeObj = anime;
             heroBg.src = anime.bannerUrl || getPosterUrl(anime.coverUrl);
             heroTitle.textContent = anime.title;
@@ -1056,6 +1131,7 @@
             if (featuredAnimeObj) {
                 openPlayerView(
                     featuredAnimeObj.id,
+                    featuredAnimeObj.idMal,
                     featuredAnimeObj.formatType,
                     featuredAnimeObj.title,
                     featuredAnimeObj.seasonYear,
@@ -1106,7 +1182,7 @@
 
             card.querySelector('.btn-play').addEventListener('click', (e) => {
                 e.stopPropagation();
-                openPlayerView(anime.id, anime.formatType, anime.title, anime.seasonYear, anime.bannerUrl, anime.description, anime.totalEpisodes, anime.streamingEpisodes);
+                openPlayerView(anime.id, anime.idMal, anime.formatType, anime.title, anime.seasonYear, anime.bannerUrl, anime.description, anime.totalEpisodes, anime.streamingEpisodes);
             });
 
             btnAdd.addEventListener('click', (e) => {
@@ -1197,10 +1273,11 @@
             targetContainer.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#888;">Loading anime...</p>';
 
             const query = `
-                query ($search: String) {
-                    Page(page: 1, perPage: 16) {
-                        media(search: $search, type: ANIME, sort: POPULARITY_DESC) {
+                query ($search: String, $format: MediaFormat, $status: MediaStatus) {
+                    Page(page: 1, perPage: 20) {
+                        media(search: $search, type: ANIME, sort: POPULARITY_DESC, format: $format, status: $status) {
                             id
+                            idMal
                             format
                             status
                             seasonYear
@@ -1223,7 +1300,14 @@
                 }
             `;
 
-            const variables = isSearchMode ? { search: searchTerm } : {};
+            const variables = {};
+            if (isSearchMode) {
+                variables.search = searchTerm;
+            }
+            if (!isSearchMode) {
+                if (activeFormatFilter) variables.format = activeFormatFilter;
+                if (activeStatusFilter) variables.status = activeStatusFilter;
+            }
 
             fetch('https://graphql.anilist.co', {
                 method: 'POST',
@@ -1244,11 +1328,13 @@
 
                 if (animeList.length === 0) {
                     targetContainer.innerHTML = '<p style="text-align:center; grid-column:1/-1; color:#888;">No anime found.</p>';
+                    if (!isSearchMode) setupHeroBanner(null);
                     return;
                 }
 
                 const formattedList = animeList.map(anime => ({
                     id: anime.id,
+                    idMal: anime.idMal || anime.id,
                     formatType: anime.format,
                     title: anime.title.english || anime.title.romaji,
                     coverUrl: anime.coverImage.extraLarge,
@@ -1279,11 +1365,33 @@
             });
         }
 
+        // Filter button event listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const type = btn.dataset.filterType;
+                const value = btn.dataset.filterValue;
+
+                document.querySelectorAll(`.filter-btn[data-filter-type="${type}"]`).forEach(b => {
+                    b.classList.remove('active-filter');
+                });
+                btn.classList.add('active-filter');
+
+                if (type === 'format') {
+                    activeFormatFilter = value;
+                } else if (type === 'status') {
+                    activeStatusFilter = value;
+                }
+
+                fetchAnime();
+            });
+        });
+
         modalPlayBtn.addEventListener('click', () => {
             if (currentActiveAnime) {
                 modalOverlay.style.display = 'none';
                 openPlayerView(
-                    currentActiveAnime.id, 
+                    currentActiveAnime.id,
+                    currentActiveAnime.idMal,
                     currentActiveAnime.formatType,
                     currentActiveAnime.title, 
                     currentActiveAnime.seasonYear, 
@@ -1295,10 +1403,11 @@
             }
         });
 
-        function openPlayerView(anilistId, formatType, title, year, bannerUrl, description, totalEpisodes, streamingEpisodes) {
+        function openPlayerView(anilistId, idMal, formatType, title, year, bannerUrl, description, totalEpisodes, streamingEpisodes) {
             showView('player');
 
             currentAnimeId = anilistId;
+            currentAnimeMalId = idMal || anilistId;
             currentFormatType = formatType;
             currentSelectedEpisode = 1;
 
@@ -1380,7 +1489,7 @@
             const isMovie = currentFormatType === 'MOVIE';
             const seasonNum = 1; 
             
-            const targetUrl = selectedServer.url(currentAnimeId, seasonNum, currentSelectedEpisode, isMovie);
+            const targetUrl = selectedServer.url(currentAnimeId, seasonNum, currentSelectedEpisode, isMovie, currentAnimeMalId);
             activePlayerIframe.src = targetUrl;
         }
 
