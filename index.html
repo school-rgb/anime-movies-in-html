@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeCloud Hub</title>
+    <title>AnimeCloud Hub - Global Edition</title>
     <style>
         :root {
             --accent-color: #ffffff;
@@ -28,7 +28,6 @@
             overflow-x: hidden;
         }
 
-        /* App Shell Layout */
         .app-layout {
             display: flex;
             width: 100%;
@@ -36,7 +35,6 @@
             background-color: #000000;
         }
 
-        /* Sidebar Navigation */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -119,7 +117,6 @@
             box-shadow: 0 4px 15px var(--accent-glow);
         }
 
-        /* Main Viewport Container */
         .main-viewport {
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
@@ -134,7 +131,6 @@
             width: 100%;
         }
 
-        /* Screens */
         .screen-view {
             padding: 50px 60px;
             min-height: 100vh;
@@ -173,7 +169,6 @@
             background: #222222;
         }
 
-        /* Enhanced Search Specifics */
         .search-container-box {
             position: relative;
             width: 100%;
@@ -233,7 +228,6 @@
             border-color: var(--accent-color);
         }
 
-        /* Settings Screen Layout */
         .settings-container {
             max-width: 800px;
             display: flex;
@@ -317,7 +311,6 @@
             background-color: #000000;
         }
 
-        /* Anime Grid */
         .anime-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -356,7 +349,6 @@
             text-overflow: ellipsis;
         }
 
-        /* Detailed View Screen */
         .detail-view {
             display: none;
             width: 100%;
@@ -736,19 +728,19 @@
                     <button class="btn-secondary" style="max-width: 140px;" onclick="switchScreen('search')">Advanced Search</button>
                 </div>
                 <div class="anime-grid" id="animeGrid">
-                    <p style="color: #9ca3af;">Fetching live anime database from AniList...</p>
+                    <p style="color: #9ca3af;">Fetching trending anime database from AniList...</p>
                 </div>
             </div>
 
             <div id="searchScreen" class="screen-view" style="display: none;">
                 <div class="screen-header">
-                    <h1 class="screen-title">Advanced Search & Filter</h1>
+                    <h1 class="screen-title">Global Anime Search</h1>
                     <button class="btn-secondary" style="max-width: 100px;" onclick="switchScreen('home')">Back</button>
                 </div>
 
                 <div class="search-container-box">
                     <img class="search-icon-abs" src="https://api.iconify.design/lucide:search.svg" alt="Search">
-                    <input type="text" id="advancedSearchInput" class="search-bar-large" placeholder="Search by title, keywords..." oninput="triggerAdvancedSearch()">
+                    <input type="text" id="advancedSearchInput" class="search-bar-large" placeholder="Search any anime in the world..." oninput="triggerGlobalSearch()">
                 </div>
 
                 <div class="genre-filters" id="genreFiltersContainer">
@@ -763,7 +755,7 @@
                 </div>
 
                 <div class="anime-grid" id="searchGrid">
-                    <p style="color: #9ca3af;">Type or select a genre above to search...</p>
+                    <p style="color: #9ca3af;">Type any title above to query the entire global database...</p>
                 </div>
             </div>
 
@@ -891,13 +883,14 @@
 
     <script>
         const streamripUrlFn = (id, s, e) => `https://streamrip.fun/play?type=anime&id=${id}&ep=${e}`;
-        let rootAnimeChains = [];
+        let cachedCatalogMap = new Map();
         let currentSeasonChain = [];
         let activeSeasonIndex = 0;
         
         let myListIds = new Set();
         let currentActiveItem = null;
         let selectedGenreFilter = 'All';
+        let searchTimeout = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             const savedList = localStorage.getItem('animeCloudWatchlist');
@@ -907,22 +900,17 @@
                     myListIds = new Set(parsedList);
                 } catch(e) { console.error(e); }
             }
-            fetchAnimeCatalog();
+            fetchInitialCatalog();
         });
 
-        async function fetchAnimeCatalog() {
+        async function fetchInitialCatalog() {
             const query = `
                 query {
-                    Page(page: 1, perPage: 5000000000) {
+                    Page(page: 1, perPage: 50) {
                         media(type: ANIME, sort: POPULARITY_DESC) {
                             id
-                            title {
-                                romaji
-                                english
-                            }
-                            coverImage {
-                                large
-                            }
+                            title { romaji english }
+                            coverImage { large }
                             bannerImage
                             description(asHtml: false)
                             averageScore
@@ -934,15 +922,10 @@
                                     relationType
                                     node {
                                         id
-                                        title {
-                                            romaji
-                                            english
-                                        }
+                                        title { romaji english }
                                         episodes
                                         bannerImage
-                                        coverImage {
-                                            large
-                                        }
+                                        coverImage { large }
                                         averageScore
                                         popularity
                                         genres
@@ -964,14 +947,85 @@
                 const json = await res.json();
                 if (json.data && json.data.Page) {
                     const rawMedia = json.data.Page.media;
-                    rootAnimeChains = groupIntoRootChains(rawMedia);
-                    renderGrid(rootAnimeChains, 'animeGrid');
-                    renderGrid(rootAnimeChains, 'searchGrid');
+                    const rootChains = groupIntoRootChains(rawMedia);
+                    rootChains.forEach(item => cachedCatalogMap.set(item.rootNode.id, item));
+                    renderGrid(rootChains, 'animeGrid');
                 }
             } catch (e) {
                 console.error("Error connecting to AniList API:", e);
-                document.getElementById('animeGrid').innerHTML = '<p style="color: #ef4444;">Failed to load anime from AniList.</p>';
+                document.getElementById('animeGrid').innerHTML = '<p style="color: #ef4444;">Failed to load anime catalog.</p>';
             }
+        }
+
+        async function triggerGlobalSearch() {
+            clearTimeout(searchTimeout);
+            const queryText = document.getElementById('advancedSearchInput').value.trim();
+            const searchGrid = document.getElementById('searchGrid');
+
+            if (!queryText && selectedGenreFilter === 'All') {
+                const list = Array.from(cachedCatalogMap.values());
+                renderGrid(list, 'searchGrid');
+                return;
+            }
+
+            searchGrid.innerHTML = '<p style="color: #9ca3af;">Searching global database...</p>';
+
+            searchTimeout = setTimeout(async () => {
+                const graphQuery = `
+                    query ($search: String) {
+                        Page(page: 1, perPage: 50) {
+                            media(type: ANIME, search: $search, sort: POPULARITY_DESC) {
+                                id
+                                title { romaji english }
+                                coverImage { large }
+                                bannerImage
+                                description(asHtml: false)
+                                averageScore
+                                popularity
+                                genres
+                                episodes
+                                relations {
+                                    edges {
+                                        relationType
+                                        node {
+                                            id
+                                            title { romaji english }
+                                            episodes
+                                            bannerImage
+                                            coverImage { large }
+                                            averageScore
+                                            popularity
+                                            genres
+                                            description(asHtml: false)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                `;
+
+                try {
+                    const res = await fetch('https://graphql.anilist.co', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query: graphQuery, variables: { search: queryText || undefined } })
+                    });
+                    const json = await res.json();
+                    if (json.data && json.data.Page) {
+                        let rawMedia = json.data.Page.media;
+                        if (selectedGenreFilter !== 'All') {
+                            rawMedia = rawMedia.filter(m => m.genres && m.genres.includes(selectedGenreFilter));
+                        }
+                        const rootChains = groupIntoRootChains(rawMedia);
+                        rootChains.forEach(item => cachedCatalogMap.set(item.rootNode.id, item));
+                        renderGrid(rootChains, 'searchGrid');
+                    }
+                } catch (err) {
+                    console.error("Global search error:", err);
+                    searchGrid.innerHTML = '<p style="color: #ef4444;">Failed to fetch search results.</p>';
+                }
+            }, 350);
         }
 
         function findRootNode(anime, allMediaMap, visited = new Set()) {
@@ -1004,17 +1058,7 @@
                 }
             });
 
-            const uniqueChainsMap = new Map();
-            rootMap.forEach((val, key) => {
-                const rootTitle = (val.rootNode.title.romaji || val.rootNode.title.english || '').toLowerCase().trim();
-                if (uniqueChainsMap.has(rootTitle)) {
-                    uniqueChainsMap.set(`${rootTitle}_${key}`, val);
-                } else {
-                    uniqueChainsMap.set(rootTitle, val);
-                }
-            });
-
-            return Array.from(uniqueChainsMap.values());
+            return Array.from(rootMap.values());
         }
 
         function buildFullChainFromRoot(rootAnime, mediaMap) {
@@ -1084,7 +1128,7 @@
                 document.getElementById('searchScreen').style.display = 'block';
                 document.getElementById('navSearch').classList.add('active');
                 document.getElementById('advancedSearchInput').focus();
-                triggerAdvancedSearch();
+                triggerGlobalSearch();
             } else if (screenName === 'mylist') {
                 document.getElementById('myListScreen').style.display = 'block';
                 document.getElementById('navMyList').classList.add('active');
@@ -1096,31 +1140,15 @@
             window.scrollTo(0, 0);
         }
 
-        function triggerAdvancedSearch() {
-            const queryText = document.getElementById('advancedSearchInput').value.toLowerCase().trim();
-            const filtered = rootAnimeChains.filter(item => {
-                const matchesGenre = selectedGenreFilter === 'All' || item.chain.some(season => season.genres && season.genres.includes(selectedGenreFilter));
-                if (!matchesGenre) return false;
-
-                if (!queryText) return true;
-                return item.chain.some(season => {
-                    const romaji = (season.title.romaji || '').toLowerCase();
-                    const english = (season.title.english || '').toLowerCase();
-                    return romaji.includes(queryText) || english.includes(queryText);
-                });
-            });
-            renderGrid(filtered, 'searchGrid');
-        }
-
         function filterByGenre(genre, element) {
             selectedGenreFilter = genre;
             document.querySelectorAll('.genre-pill').forEach(pill => pill.classList.remove('active'));
             element.classList.add('active');
-            triggerAdvancedSearch();
+            triggerGlobalSearch();
         }
 
         function renderMyList() {
-            const savedItems = rootAnimeChains.filter(item => myListIds.has(item.rootNode.id));
+            const savedItems = Array.from(cachedCatalogMap.values()).filter(item => myListIds.has(item.rootNode.id));
             renderGrid(savedItems, 'myListGrid');
             if (savedItems.length === 0) {
                 document.getElementById('myListGrid').innerHTML = '<p style="color: #9ca3af;">Your watchlist is currently empty. Click \'+\' on any anime title to save it here!</p>';
@@ -1292,7 +1320,7 @@
             const currentRootId = currentSeasonChain[0].id;
             const primaryGenre = currentSeasonChain[0].genres && currentSeasonChain[0].genres.length > 0 ? currentSeasonChain[0].genres[0] : null;
 
-            let recommendations = rootAnimeChains.filter(item => item.rootNode.id !== currentRootId);
+            let recommendations = Array.from(cachedCatalogMap.values()).filter(item => item.rootNode.id !== currentRootId);
 
             if (primaryGenre) {
                 recommendations.sort((a, b) => {
