@@ -1,32 +1,10 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeCloudv3</title>
-    <style>
-        :root {
-            --accent-color: #ff0000;
-            --accent-hover: #cc0000;
-            --sidebar-width: 240px;
-            --header-height: 56px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        html, body {
-            width: 100%;
-     <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AnimeCloudv3</title>
     <style>
         :root {
@@ -206,7 +184,7 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
         }
 
-        /* YouTube-style Search Dropdown Menu */
+        /* YouTube-style Search Dropdown Menu matching uploaded Screenshot */
         .search-dropdown-menu {
             display: none;
             position: absolute;
@@ -369,7 +347,7 @@
             background-color: #0f0f0f;
         }
 
-        /* Featured Carousel Banner Section */
+        /* Featured Carousel Banner Section (Robustly fixed scrollable behavior) */
         .hero-carousel-section {
             position: relative;
             margin-bottom: 32px;
@@ -595,7 +573,7 @@
             background: #3f3f3f;
         }
 
-        /* Show More Button Container */
+        /* Show More Button Container with left and right horizontal line separators matching screenshot design */
         .show-more-container {
             display: flex;
             align-items: center;
@@ -641,7 +619,7 @@
             background: #272727;
         }
 
-        /* Detail View Layout Style */
+        /* Detail View Layout Style (Isolated Area) */
         .detail-view {
             display: none;
             width: 100%;
@@ -688,7 +666,6 @@
         .content {
             max-width: 800px;
             margin-bottom: 20px;
-            z-index: 2;
         }
 
         .title {
@@ -894,7 +871,6 @@
 
         .episode-info {
             flex-grow: 1;
-            text-align: left;
         }
 
         .episode-title {
@@ -969,131 +945,6 @@
 
         .player-close-btn:hover {
             background: #3f3f3f;
-        }
-
-        /* =========================================
-           MOBILE RESPONSIVENESS & MEDIA QUERIES
-           ========================================= */
-        @media (max-width: 768px) {
-            /* Header */
-            .sidebar-brand img.custom-text {
-                display: none; /* Hide text logo to make room for search */
-            }
-            .header-center {
-                flex: 1 1 100%;
-                margin: 0 8px;
-                gap: 8px;
-            }
-            .search-input {
-                font-size: 14px;
-            }
-            .search-btn, .mic-btn {
-                width: 40px;
-            }
-            .header-right {
-                display: none; /* Hide right spacer on small screens */
-            }
-
-            /* Sidebar Overlay */
-            .sidebar {
-                transform: translateX(-100%);
-                box-shadow: 4px 0 15px rgba(0,0,0,0.7);
-            }
-            .main-viewport {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
-            .screen-view {
-                padding: 16px;
-            }
-
-            /* Hero Carousel */
-            .hero-banner-card {
-                width: 85vw;
-                height: calc(85vw * 0.5625); /* 16:9 ratio */
-            }
-            .hero-carousel-title {
-                font-size: 16px;
-            }
-            
-            /* Grid */
-            .poster-grid {
-                grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-                gap: 16px 8px;
-            }
-            
-            /* Details View */
-            .container {
-                padding: 20px;
-                padding-bottom: 24px;
-                height: auto;
-                min-height: 55vh;
-            }
-            .title {
-                font-size: 24px;
-            }
-            .description {
-                font-size: 13px;
-                -webkit-line-clamp: 4; /* Show slightly more text on mobile */
-            }
-            .section-block {
-                padding: 20px 16px;
-            }
-            .season-dropdown {
-                width: 100%;
-            }
-
-            /* Episode Cards */
-            .episode-card {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 12px;
-                position: relative;
-                background: rgba(255, 255, 255, 0.03);
-            }
-            .episode-number {
-                display: none;
-            }
-            .episode-thumbnail {
-                width: 100%;
-                height: auto;
-                aspect-ratio: 16/9;
-                margin-bottom: 8px;
-            }
-            .episode-info {
-                margin-right: 40px; /* Make room for play button */
-            }
-            .episode-play {
-                position: absolute;
-                bottom: 12px;
-                right: 12px;
-                background: #cc0000;
-                padding: 8px 12px;
-                border-radius: 50%;
-                font-size: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            }
-            
-            /* Player */
-            .player-modal {
-                padding: 0;
-            }
-            .player-wrapper {
-                border-radius: 0;
-                max-width: 100%;
-                height: 100%;
-                display: flex;
-                align-items: center;
-            }
-            .player-close-btn {
-                top: 16px;
-                right: 16px;
-                z-index: 300;
-                background: rgba(0,0,0,0.7);
-            }
         }
     </style>
 </head>
@@ -1319,11 +1170,6 @@
         let currentSearchQuery = '';
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Setup default mobile layout state on load
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.add('hidden');
-            }
-
             const savedList = localStorage.getItem('animeCloudWatchlist');
             if (savedList) {
                 try {
@@ -1346,11 +1192,7 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('hidden');
             const viewport = document.getElementById('mainViewport');
-            
-            // Only toggle the full-width viewport class on Desktop
-            if (window.innerWidth > 768) {
-                viewport.classList.toggle('full-width');
-            }
+            viewport.classList.toggle('full-width');
         }
 
         function showSearchDropdown() {
@@ -1714,12 +1556,6 @@
             document.getElementById('mainViewport').classList.remove('full-width');
             document.getElementById('searchDropdownMenu').style.display = 'none';
 
-            // Auto-hide sidebar on mobile when navigating
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.add('hidden');
-                document.getElementById('mainViewport').classList.add('full-width');
-            }
-
             document.getElementById('homeScreen').style.display = 'none';
             document.getElementById('searchScreen').style.display = 'none';
             document.getElementById('myListScreen').style.display = 'none';
@@ -1940,3 +1776,4 @@
     </script>
 </body>
 </html>
+
