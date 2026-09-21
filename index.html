@@ -1,15 +1,13 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnimeCloudv3</title>
+    <title>Frutianime</title>
     <style>
         :root {
-            --accent-color: #ff0000;
-            --accent-hover: #cc0000;
+            --accent-color: #ffffff;
+            --accent-hover: #cccccc;
             --sidebar-width: 240px;
             --header-height: 56px;
         }
@@ -24,7 +22,7 @@
         html, body {
             width: 100%;
             height: 100%;
-            background-color: #0f0f0f;
+            background-color: #000000;
             color: #ffffff;
             scroll-behavior: smooth;
             overflow-x: hidden;
@@ -37,7 +35,7 @@
             left: 0;
             width: 100%;
             height: var(--header-height);
-            background-color: #0f0f0f;
+            background-color: #000000;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -75,25 +73,30 @@
         .menu-icon {
             width: 24px;
             height: 24px;
-            filter: brightness(0) invert(1);
+            filter: invert(1);
         }
 
         .sidebar-brand {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .sidebar-brand img.cloud-icon {
             width: 32px;
             height: 32px;
             object-fit: contain;
+            /* Explicitly ensuring logo PNG remains non-inverted */
+            filter: none !important;
         }
 
-        .sidebar-brand img.custom-text {
-            height: 36px;
-            object-fit: contain;
+        .sidebar-brand-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         /* YouTube Search Bar & Microphone */
@@ -109,7 +112,7 @@
             display: flex;
             width: 100%;
             background: #121212;
-            border: 1px solid #303030;
+            border: 1px solid #333333;
             border-radius: 40px 0 0 40px;
             padding-left: 16px;
             align-items: center;
@@ -120,14 +123,14 @@
             width: 100%;
             background: transparent;
             border: none;
-            color: white;
+            color: #ffffff;
             font-size: 16px;
             outline: none;
         }
 
         .search-btn {
             background: #222222;
-            border: 1px solid #303030;
+            border: 1px solid #333333;
             border-left: none;
             border-radius: 0 40px 40px 0;
             width: 64px;
@@ -140,18 +143,18 @@
         }
 
         .search-btn:hover {
-            background: #272727;
+            background: #333333;
         }
 
         .search-btn img {
             width: 20px;
             height: 20px;
-            filter: brightness(0) invert(0.7);
+            filter: invert(1);
         }
 
         .mic-btn {
             background: #222222;
-            border: 1px solid #303030;
+            border: 1px solid #333333;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -164,37 +167,41 @@
         }
 
         .mic-btn:hover {
-            background: #272727;
+            background: #333333;
         }
 
         .mic-btn img {
             width: 20px;
             height: 20px;
-            filter: brightness(0) invert(0.9);
+            filter: invert(1);
         }
 
         .mic-btn.listening {
-            background: #cc0000;
+            background: #ffffff;
             animation: pulse-mic 1.5s infinite;
         }
 
-        @keyframes pulse-mic {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+        .mic-btn.listening img {
+            filter: invert(0);
         }
 
-        /* YouTube-style Search Dropdown Menu matching uploaded Screenshot */
+        @keyframes pulse-mic {
+            0% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        /* Search Dropdown Menu */
         .search-dropdown-menu {
             display: none;
             position: absolute;
             top: 48px;
             left: 0;
             width: 100%;
-            background-color: #212121;
-            border: 1px solid #303030;
+            background-color: #121212;
+            border: 1px solid #333333;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.8);
             z-index: 1000;
             overflow: hidden;
             padding: 8px 0;
@@ -217,7 +224,7 @@
         }
 
         .search-dropdown-item:hover {
-            background-color: #353535;
+            background-color: #222222;
         }
 
         .search-dropdown-item-left {
@@ -230,12 +237,12 @@
             width: 20px;
             height: 20px;
             object-fit: contain;
-            filter: brightness(0) invert(0.7);
+            filter: invert(1);
         }
 
         .search-dropdown-text {
             font-size: 15px;
-            color: #f1f1f1;
+            color: #ffffff;
             font-weight: 400;
         }
 
@@ -244,7 +251,8 @@
             height: 36px;
             border-radius: 4px;
             object-fit: cover;
-            background-color: #111;
+            background-color: #222;
+            filter: none !important;
         }
 
         /* Layout Structure */
@@ -253,7 +261,7 @@
             width: 100%;
             min-height: 100vh;
             padding-top: var(--header-height);
-            background-color: #0f0f0f;
+            background-color: #000000;
             transition: padding-top 0.2s ease;
         }
 
@@ -261,11 +269,11 @@
             padding-top: 0;
         }
 
-        /* YouTube Sidebar */
+        /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
             height: calc(100vh - var(--header-height));
-            background-color: #0f0f0f;
+            background-color: #000000;
             padding: 12px;
             display: flex;
             flex-direction: column;
@@ -274,6 +282,7 @@
             left: 0;
             z-index: 90;
             overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
             transition: transform 0.2s ease, width 0.2s ease;
         }
 
@@ -308,7 +317,7 @@
             width: 24px;
             height: 24px;
             object-fit: contain;
-            filter: brightness(0) invert(1);
+            filter: invert(1);
         }
 
         .nav-item:hover {
@@ -316,14 +325,8 @@
         }
 
         .nav-item.active {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             font-weight: 500;
-        }
-
-        .sidebar-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 12px 0;
         }
 
         /* Main Viewport */
@@ -331,7 +334,7 @@
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
             min-height: calc(100vh - var(--header-height));
-            background-color: #0f0f0f;
+            background-color: #000000;
             position: relative;
             transition: margin 0.2s ease, width 0.2s ease;
         }
@@ -344,10 +347,10 @@
         .screen-view {
             padding: 24px;
             min-height: 100vh;
-            background-color: #0f0f0f;
+            background-color: #000000;
         }
 
-        /* Featured Carousel Banner Section (Robustly fixed scrollable behavior) */
+        /* Featured Carousel Banner Section */
         .hero-carousel-section {
             position: relative;
             margin-bottom: 32px;
@@ -364,7 +367,7 @@
         .hero-carousel-title {
             font-size: 18px;
             font-weight: 600;
-            color: #f1f1f1;
+            color: #ffffff;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -375,6 +378,7 @@
             height: 20px;
             object-fit: contain;
             vertical-align: middle;
+            filter: invert(1);
         }
 
         .hero-carousel-viewport {
@@ -382,7 +386,7 @@
             overflow-x: auto;
             scroll-behavior: smooth;
             scrollbar-width: thin;
-            scrollbar-color: #555 #111;
+            scrollbar-color: #444 #111;
             border-radius: 12px;
             padding-bottom: 8px;
         }
@@ -391,15 +395,12 @@
             height: 8px;
         }
         .hero-carousel-viewport::-webkit-scrollbar-track {
-            background: #121212;
+            background: #111;
             border-radius: 4px;
         }
         .hero-carousel-viewport::-webkit-scrollbar-thumb {
             background: #444;
             border-radius: 4px;
-        }
-        .hero-carousel-viewport::-webkit-scrollbar-thumb:hover {
-            background: #666;
         }
 
         .hero-carousel-track {
@@ -416,7 +417,7 @@
             overflow: hidden;
             position: relative;
             cursor: pointer;
-            background-color: #222;
+            background-color: #111;
             box-shadow: 0 4px 12px rgba(0,0,0,0.5);
             transition: transform 0.2s;
         }
@@ -429,6 +430,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* Retaining original vivid colors */
+            filter: none !important;
         }
 
         .hero-banner-overlay {
@@ -436,7 +439,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 100%);
             padding: 16px;
         }
 
@@ -451,7 +454,7 @@
             overflow: hidden;
         }
 
-        /* YouTube Chip Bar */
+        /* Chip Bar */
         .chip-bar {
             display: flex;
             gap: 12px;
@@ -465,8 +468,8 @@
         }
 
         .genre-pill {
-            background: #272727;
-            border: none;
+            background: #1a1a1a;
+            border: 1px solid #333;
             color: #ffffff;
             padding: 8px 12px;
             border-radius: 8px;
@@ -478,15 +481,16 @@
         }
 
         .genre-pill:hover {
-            background: #3f3f3f;
+            background: #2a2a2a;
         }
 
         .genre-pill.active {
             background: #ffffff;
-            color: #0f0f0f;
+            color: #000000;
+            border-color: #ffffff;
         }
 
-        /* Standard Poster Grid Pattern underneath */
+        /* Poster Grid */
         .poster-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -510,7 +514,7 @@
             aspect-ratio: 2 / 3;
             border-radius: 12px;
             overflow: hidden;
-            background-color: #222222;
+            background-color: #111;
             position: relative;
             transition: transform 0.2s;
         }
@@ -523,12 +527,14 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            /* Retaining original vivid colors */
+            filter: none !important;
         }
 
         .poster-card-title {
             font-size: 14px;
             font-weight: 500;
-            color: #f1f1f1;
+            color: #ffffff;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -541,7 +547,7 @@
             color: #aaa;
         }
 
-        /* Standard screens & controls */
+        /* Controls */
         .screen-header {
             display: flex;
             justify-content: space-between;
@@ -555,12 +561,13 @@
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
         .btn-secondary {
-            background: #272727;
-            border: none;
-            color: white;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #ffffff;
             padding: 8px 16px;
             border-radius: 8px;
             font-size: 14px;
@@ -570,10 +577,10 @@
         }
 
         .btn-secondary:hover {
-            background: #3f3f3f;
+            background: #2a2a2a;
         }
 
-        /* Show More Button Container with left and right horizontal line separators matching screenshot design */
+        /* Show More Button Container */
         .show-more-container {
             display: flex;
             align-items: center;
@@ -588,7 +595,7 @@
             content: '';
             flex: 1;
             height: 1px;
-            background-color: #303030;
+            background-color: #333333;
         }
 
         .show-more-container::before {
@@ -600,9 +607,9 @@
         }
 
         .show-more-btn {
-            background: #222222;
-            border: 1px solid #303030;
-            color: #f1f1f1;
+            background: #121212;
+            border: 1px solid #333333;
+            color: #ffffff;
             padding: 10px 40px;
             border-radius: 30px;
             font-size: 14px;
@@ -616,23 +623,24 @@
         }
 
         .show-more-btn:hover {
-            background: #272727;
+            background: #222222;
         }
 
-        /* Detail View Layout Style (Isolated Area) */
+        /* Detail View Layout Style */
         .detail-view {
             display: none;
             width: 100%;
             min-height: 100vh;
-            background-color: #0f0f0f;
+            background-color: #000000;
         }
 
         .container {
             position: relative;
             width: 100%;
             height: 85vh;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(15,15,15,0.9) 70%, #0f0f0f 100%),
-                        #0f0f0f no-repeat center center/cover;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 70%, #000000 100%),
+                        #000000 no-repeat center center/cover;
+            filter: none !important;
             padding: 40px;
             display: flex;
             flex-direction: column;
@@ -646,8 +654,8 @@
             right: 24px;
             width: 40px;
             height: 40px;
-            background-color: #272727;
-            border: none;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
             border-radius: 50%;
             color: #ffffff;
             font-size: 18px;
@@ -660,18 +668,20 @@
         }
 
         .close-btn:hover {
-            background-color: #3f3f3f;
+            background-color: #2a2a2a;
         }
 
         .content {
             max-width: 800px;
             margin-bottom: 20px;
+            filter: none !important;
         }
 
         .title {
             font-size: 36px;
             font-weight: 700;
             margin-bottom: 12px;
+            color: #ffffff;
         }
 
         .metadata {
@@ -684,6 +694,7 @@
 
         .rating {
             background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 13px;
@@ -691,10 +702,11 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            color: #ffffff;
         }
 
         .rating span {
-            color: #f1c40f;
+            color: #ffd700;
         }
 
         .rating-count {
@@ -703,7 +715,7 @@
         }
 
         .genre {
-            background-color: rgba(255, 255, 255, 0.15);
+            background-color: rgba(255, 255, 255, 0.2);
             color: #ffffff;
             padding: 4px 10px;
             border-radius: 6px;
@@ -715,7 +727,7 @@
         .description {
             font-size: 14px;
             line-height: 1.5;
-            color: #aaa;
+            color: #dddddd;
             margin-bottom: 20px;
             max-width: 700px;
             display: -webkit-box;
@@ -733,7 +745,7 @@
 
         .watch-btn {
             background: #ffffff;
-            color: #0f0f0f;
+            color: #000000;
             border: none;
             padding: 10px 24px;
             border-radius: 18px;
@@ -747,16 +759,16 @@
         }
 
         .watch-btn:hover {
-            background: #d9d9d9;
+            background: #cccccc;
         }
 
         .add-btn {
             width: 40px;
             height: 40px;
-            background-color: #272727;
-            border: none;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
             border-radius: 50%;
-            color: white;
+            color: #ffffff;
             font-size: 20px;
             cursor: pointer;
             display: flex;
@@ -766,13 +778,13 @@
         }
 
         .add-btn:hover {
-            background-color: #3f3f3f;
+            background-color: #2a2a2a;
         }
 
         .tabs {
             display: flex;
             gap: 24px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             padding-bottom: 2px;
             width: 100%;
             max-width: 1000px;
@@ -790,7 +802,7 @@
         }
 
         .tab.active {
-            color: white;
+            color: #ffffff;
         }
 
         .tab.active::after {
@@ -800,13 +812,13 @@
             left: 0;
             width: 100%;
             height: 2px;
-            background-color: white;
+            background-color: #ffffff;
         }
 
         .section-block {
             width: 100%;
             min-height: 100vh;
-            background-color: #0f0f0f;
+            background-color: #000000;
             padding: 40px;
         }
 
@@ -814,12 +826,13 @@
             font-size: 20px;
             font-weight: 600;
             margin-bottom: 20px;
+            color: #ffffff;
         }
 
         .season-dropdown {
-            background-color: #222222;
-            color: white;
-            border: 1px solid #303030;
+            background-color: #121212;
+            color: #ffffff;
+            border: 1px solid #333333;
             padding: 8px 14px;
             border-radius: 8px;
             font-size: 14px;
@@ -850,7 +863,7 @@
         }
 
         .episode-card:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .episode-number {
@@ -867,6 +880,7 @@
             border-radius: 6px;
             object-fit: cover;
             background-color: #222;
+            filter: none !important;
         }
 
         .episode-info {
@@ -876,7 +890,7 @@
         .episode-title {
             font-size: 14px;
             font-weight: 500;
-            color: #f1f1f1;
+            color: #ffffff;
             margin-bottom: 4px;
         }
 
@@ -891,7 +905,7 @@
         }
 
         .episode-play {
-            color: #fff;
+            color: #ffffff;
             font-size: 16px;
             padding-right: 12px;
         }
@@ -910,6 +924,7 @@
             align-items: center;
             flex-direction: column;
             padding: 40px;
+            filter: none !important;
         }
 
         .player-wrapper {
@@ -933,8 +948,8 @@
             position: absolute;
             top: 24px;
             right: 32px;
-            background: #272727;
-            color: white;
+            background: #ffffff;
+            color: #000000;
             border: none;
             padding: 8px 16px;
             border-radius: 8px;
@@ -944,7 +959,7 @@
         }
 
         .player-close-btn:hover {
-            background: #3f3f3f;
+            background: #cccccc;
         }
     </style>
 </head>
@@ -953,12 +968,12 @@
     <header class="yt-header" id="ytHeader">
         <div class="header-left">
             <button class="menu-btn" onclick="toggleSidebar()">
-                <img class="menu-icon" src="https://api.iconify.design/lucide:menu.svg" alt="Menu">
+                <img class="menu-icon" src="https://img.icons8.com/?size=100&id=36389&format=png&color=FFFFFF" alt="Menu">
             </button>
-            <div class="sidebar-brand" onclick="switchScreen('home')">
-                <img class="cloud-icon" src="https://s3-new.macosicons.com/macosicons/parse/Adobe_Creative_Cloud_8LShPVGzjf_lowResPng-a6f930c87d.png" alt="Cloud Logo">
-                <img class="custom-text" src="https://github.com/school-rgb/anime-movies-in-html/blob/main/animecloud.png?raw=true" alt="AnimeCloud Text">
-            </div>
+            <a class="sidebar-brand" onclick="switchScreen('home')">
+                <img class="cloud-icon" src="https://github.com/school-rgb/frutiger-logo/blob/main/Screenshot%202026-09-20%2010.27.39%20PM-inverted.png?raw=true" alt="Frutianime Logo">
+                <span class="sidebar-brand-text">Frutianime</span>
+            </a>
         </div>
 
         <div class="header-center">
@@ -966,16 +981,15 @@
                 <input type="text" id="headerSearchInput" class="search-input" placeholder="Search anime..." onfocus="showSearchDropdown()" oninput="handleHeaderInput(event)" onkeydown="handleHeaderSearch(event)">
             </div>
             <button class="search-btn" onclick="executeHeaderSearch()">
-                <img src="https://api.iconify.design/lucide:search.svg" alt="Search">
+                <img src="https://img.icons8.com/?size=100&id=elSdeHsB03U3&format=png&color=FFFFFF" alt="Search">
             </button>
             <button class="mic-btn" id="micBtn" onclick="toggleVoiceSearch()" title="Search with your voice">
-                <img src="https://api.iconify.design/lucide:mic.svg" alt="Microphone">
+                <img src="https://img.icons8.com/?size=100&id=M0nvDJhT5w5g&format=png&color=FFFFFF" alt="Microphone">
             </button>
 
             <div class="search-dropdown-menu" id="searchDropdownMenu">
-                <div class="search-dropdown-header">Trending on Anime Cloud</div>
-                <div id="searchDropdownList">
-                    </div>
+                <div class="search-dropdown-header">Trending on Frutianime</div>
+                <div id="searchDropdownList"></div>
             </div>
         </div>
 
@@ -986,17 +1000,13 @@
         <div id="sidebar" class="sidebar">
             <div class="nav-menu">
                 <button class="nav-item active" id="navHome" onclick="switchScreen('home')">
-                    <img class="nav-icon" src="https://api.iconify.design/lucide:home.svg" alt="Home"> Home
+                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=1iF9PyJ2Thzo&format=png&color=FFFFFF" alt="Home"> Home
                 </button>
                 <button class="nav-item" id="navSearch" onclick="handleExploreClick()">
-                    <img class="nav-icon" src="https://api.iconify.design/lucide:search.svg" alt="Explore"> Explore
+                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=BogAPe6WjbSc&format=png&color=FFFFFF" alt="Explore"> Explore
                 </button>
                 <button class="nav-item" id="navMyList" onclick="switchScreen('mylist')">
-                    <img class="nav-icon" src="https://api.iconify.design/lucide:bookmark.svg" alt="Library"> Watch Later
-                </button>
-                <div class="sidebar-divider"></div>
-                <button class="nav-item" id="navSettings" onclick="switchScreen('settings')">
-                    <img class="nav-icon" src="https://api.iconify.design/lucide:settings.svg" alt="Settings"> Settings
+                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=83134&format=png&color=FFFFFF" alt="Library"> Watch Later
                 </button>
             </div>
         </div>
@@ -1008,7 +1018,7 @@
                 <div class="hero-carousel-section">
                     <div class="hero-carousel-header">
                         <div class="hero-carousel-title">
-                            <img class="fire-icon-custom" src="https://img.icons8.com/?size=100&id=60985&format=png&color=FFFFFF" alt="Fire"> Featured Spotlights
+                            <img class="fire-icon-custom" src="https://img.icons8.com/?size=100&id=60985&format=png&color=000000" alt="Fire"> Featured Spotlights
                         </div>
                     </div>
                     <div class="hero-carousel-viewport">
@@ -1030,7 +1040,7 @@
                 </div>
 
                 <div class="poster-grid" id="animeGrid">
-                    <p style="color: #aaa;">Fetching catalog from animecloud</p>
+                    <p style="color: #aaa;">Fetching catalog from Frutianime</p>
                 </div>
 
                 <div class="show-more-container" id="homeShowMoreContainer" style="display: none;">
@@ -1068,28 +1078,6 @@
                     <button class="show-more-btn" onclick="loadMoreMyListAnime()">
                         Show more <span style="font-size: 12px;">&#9660;</span>
                     </button>
-                </div>
-            </div>
-
-            <div id="settingsScreen" class="screen-view" style="display: none;">
-                <div class="screen-header">
-                    <h1 class="screen-title">Settings</h1>
-                    <button class="btn-secondary" onclick="switchScreen('home')">Back to Home</button>
-                </div>
-
-                <div class="settings-container">
-                    <div class="setting-card">
-                        <div class="setting-info">
-                            <h3>Streaming Quality</h3>
-                            <p>Choose default playback resolution.</p>
-                        </div>
-                        <div class="setting-control">
-                            <select id="qualitySelect" onchange="saveSetting('quality', this.value)">
-                                <option value="1080p">1080p Full HD</option>
-                                <option value="720p">720p HD</option>
-                            </select>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -1170,7 +1158,7 @@
         let currentSearchQuery = '';
 
         window.addEventListener('DOMContentLoaded', () => {
-            const savedList = localStorage.getItem('animeCloudWatchlist');
+            const savedList = localStorage.getItem('frutianimeWatchlist');
             if (savedList) {
                 try {
                     myListIds = new Set(JSON.parse(savedList));
@@ -1178,7 +1166,6 @@
             }
             fetchInitialCatalog();
 
-            // Hide search dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 const searchCenter = document.querySelector('.header-center');
                 const dropdown = document.getElementById('searchDropdownMenu');
@@ -1220,7 +1207,7 @@
                 };
                 row.innerHTML = `
                     <div class="search-dropdown-item-left">
-                        <img class="search-dropdown-icon" src="https://img.icons8.com/?size=100&id=60985&format=png&color=FFFFFF" alt="Fire">
+                        <img class="search-dropdown-icon" src="https://img.icons8.com/?size=100&id=60985&format=png&color=000000" alt="Fire">
                         <span class="search-dropdown-text">${titleText}</span>
                     </div>
                     <img class="search-dropdown-thumb" src="${thumbImg}" alt="${titleText}">
@@ -1229,13 +1216,12 @@
             });
         }
 
-        // Voice Search Support via Web Speech API
         function toggleVoiceSearch() {
             const micBtn = document.getElementById('micBtn');
             const searchInput = document.getElementById('headerSearchInput');
 
             if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('Speech recognition is not supported in this browser. Please try Chrome or Edge.');
+                alert('Speech recognition is not supported in this browser.');
                 return;
             }
 
@@ -1326,54 +1312,65 @@
         }
 
         async function fetchInitialCatalog() {
-            const query = `
-                query {
-                    Page(page: 1, perPage: 50) {
-                        media(type: ANIME, sort: POPULARITY_DESC) {
-                            id
-                            title { romaji english }
-                            coverImage { large }
-                            bannerImage
-                            description(asHtml: false)
-                            averageScore
-                            popularity
-                            genres
-                            episodes
-                            relations {
-                                edges {
-                                    relationType
-                                    node {
-                                        id
-                                        title { romaji english }
-                                        episodes
-                                        bannerImage
-                                        coverImage { large }
-                                        averageScore
-                                        popularity
-                                        genres
-                                        description(asHtml: false)
+            let allMedia = [];
+            for (let pageNum = 1; pageNum <= 5; pageNum++) {
+                const query = `
+                    query {
+                        Page(page: ${pageNum}, perPage: 50) {
+                            media(type: ANIME, sort: POPULARITY_DESC) {
+                                id
+                                title { romaji english }
+                                coverImage { large }
+                                bannerImage
+                                description(asHtml: false)
+                                averageScore
+                                popularity
+                                genres
+                                isAdult
+                                episodes
+                                relations {
+                                    edges {
+                                        relationType
+                                        node {
+                                            id
+                                            title { romaji english }
+                                            episodes
+                                            bannerImage
+                                            coverImage { large }
+                                            averageScore
+                                            popularity
+                                            genres
+                                            isAdult
+                                            description(asHtml: false)
+                                        }
                                     }
                                 }
                             }
                         }
                     }
-                }
-            `;
+                `;
 
-            try {
-                const res = await fetch('https://graphql.anilist.co', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ query })
-                });
-                const json = await res.json();
-                if (json.data && json.data.Page) {
-                    rawFetchedMediaList = json.data.Page.media;
-                    renderHomeFeed();
+                try {
+                    const res = await fetch('https://graphql.anilist.co', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ query })
+                    });
+                    const json = await res.json();
+                    if (json.data && json.data.Page && json.data.Page.media) {
+                        const filteredBatch = json.data.Page.media.filter(m => !m.isAdult && !(m.genres && m.genres.includes('Hentai')));
+                        allMedia = allMedia.concat(filteredBatch);
+                    }
+                } catch (e) {
+                    console.error("Error fetching catalog page:", e);
                 }
-            } catch (e) {
-                console.error("Error connecting to AniList API:", e);
-                document.getElementById('animeGrid').innerHTML = '<p style="color: #ff4e45;">Failed to load catalog feed.</p>';
+            }
+
+            rawFetchedMediaList = allMedia;
+            if (rawFetchedMediaList.length > 0) {
+                renderHomeFeed();
+            } else {
+                document.getElementById('animeGrid').innerHTML = '<p style="color: #aaa;">Failed to load catalog feed.</p>';
             }
         }
 
@@ -1559,13 +1556,11 @@
             document.getElementById('homeScreen').style.display = 'none';
             document.getElementById('searchScreen').style.display = 'none';
             document.getElementById('myListScreen').style.display = 'none';
-            document.getElementById('settingsScreen').style.display = 'none';
             document.getElementById('detailView').style.display = 'none';
 
             document.getElementById('navHome').classList.remove('active');
             document.getElementById('navSearch').classList.remove('active');
             document.getElementById('navMyList').classList.remove('active');
-            document.getElementById('navSettings').classList.remove('active');
 
             if (screenName === 'home') {
                 document.getElementById('homeScreen').style.display = 'block';
@@ -1577,9 +1572,6 @@
                 document.getElementById('myListScreen').style.display = 'block';
                 document.getElementById('navMyList').classList.add('active');
                 renderMyList();
-            } else if (screenName === 'settings') {
-                document.getElementById('settingsScreen').style.display = 'block';
-                document.getElementById('navSettings').classList.add('active');
             }
             window.scrollTo(0, 0);
         }
@@ -1614,18 +1606,15 @@
             if (myListIds.has(rootId)) {
                 myListIds.delete(rootId);
                 addBtn.innerText = '+';
-                addBtn.style.background = '#272727';
+                addBtn.style.background = '#1a1a1a';
+                addBtn.style.color = '#ffffff';
             } else {
                 myListIds.add(rootId);
                 addBtn.innerText = '✓';
                 addBtn.style.background = '#ffffff';
-                addBtn.style.color = '#0f0f0f';
+                addBtn.style.color = '#000000';
             }
-            localStorage.setItem('animeCloudWatchlist', JSON.stringify(Array.from(myListIds)));
-        }
-
-        function saveSetting(key, val) {
-            console.log(`Setting saved: ${key} = ${val}`);
+            localStorage.setItem('frutianimeWatchlist', JSON.stringify(Array.from(myListIds)));
         }
 
         function switchTab(tabName) {
@@ -1661,7 +1650,6 @@
             document.getElementById('homeScreen').style.display = 'none';
             document.getElementById('searchScreen').style.display = 'none';
             document.getElementById('myListScreen').style.display = 'none';
-            document.getElementById('settingsScreen').style.display = 'none';
             document.getElementById('detailView').style.display = 'block';
             window.scrollTo(0, 0);
 
@@ -1670,10 +1658,10 @@
             if (myListIds.has(rootId)) {
                 addBtn.innerText = '✓';
                 addBtn.style.background = '#ffffff';
-                addBtn.style.color = '#0f0f0f';
+                addBtn.style.color = '#000000';
             } else {
                 addBtn.innerText = '+';
-                addBtn.style.background = '#272727';
+                addBtn.style.background = '#1a1a1a';
                 addBtn.style.color = '#ffffff';
             }
 
@@ -1703,7 +1691,7 @@
             const container = document.getElementById('mainContainer');
 
             container.style.background = `
-                linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(15,15,15,0.9) 70%, #0f0f0f 100%),
+                linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.9) 70%, #000000 100%),
                 url('${fallbackBanner}') no-repeat center center/cover
             `;
 
@@ -1776,4 +1764,3 @@
     </script>
 </body>
 </html>
-
