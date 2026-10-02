@@ -8,8 +8,8 @@
         :root {
             --accent-color: #ffffff;
             --accent-hover: #cccccc;
-            --sidebar-width: 240px;
             --header-height: 56px;
+            --bottom-nav-height: 60px;
         }
 
         * {
@@ -55,27 +55,6 @@
             gap: 16px;
         }
 
-        .menu-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .menu-icon {
-            width: 24px;
-            height: 24px;
-            filter: none;
-        }
-
         .sidebar-brand {
             display: flex;
             align-items: center;
@@ -85,10 +64,9 @@
         }
 
         .sidebar-brand img.cloud-icon {
-            width: 32px;
-            height: 32px;
+            width: 20px;
+            height: 20px;
             object-fit: contain;
-            /* Explicitly ensuring logo PNG remains non-inverted */
             filter: none !important;
         }
 
@@ -269,84 +247,83 @@
             padding-top: 0;
         }
 
-        /* Sidebar */
-        .sidebar {
-            width: var(--sidebar-width);
-            height: calc(100vh - var(--header-height));
-            background-color: #000000;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
+        /* Bottom Navigation Bar */
+        .bottom-nav {
             position: fixed;
-            top: var(--header-height);
+            bottom: 0;
             left: 0;
-            z-index: 90;
-            overflow-y: auto;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.2s ease, width 0.2s ease;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
-
-        .nav-menu {
+            width: 100%;
+            height: var(--bottom-nav-height);
+            background-color: #000000;
             display: flex;
-            flex-direction: column;
-            gap: 4px;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 90;
+            transition: transform 0.2s ease;
+        }
+
+        .bottom-nav.hidden {
+            transform: translateY(100%);
         }
 
         .nav-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 24px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            color: #ffffff;
-            font-size: 14px;
-            font-weight: 400;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 16px;
+            border-radius: 8px;
+            color: #888888;
+            font-size: 12px;
+            font-weight: 500;
             background: none;
             border: none;
             cursor: pointer;
-            text-align: left;
             width: 100%;
-            transition: background 0.2s;
+            height: 100%;
+            transition: color 0.2s, background 0.2s;
         }
 
         .nav-icon {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             object-fit: contain;
-            filter: none;
+            filter: opacity(0.6);
+            transition: filter 0.2s;
         }
 
         .nav-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .nav-item:hover .nav-icon {
+            filter: opacity(1);
         }
 
         .nav-item.active {
-            background: rgba(255, 255, 255, 0.2);
-            font-weight: 500;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .nav-item.active .nav-icon {
+            filter: opacity(1);
         }
 
         /* Main Viewport */
         .main-viewport {
-            margin-left: var(--sidebar-width);
-            width: calc(100% - var(--sidebar-width));
-            min-height: calc(100vh - var(--header-height));
-            background-color: #000000;
-            position: relative;
-            transition: margin 0.2s ease, width 0.2s ease;
-        }
-
-        .main-viewport.full-width {
             margin-left: 0;
             width: 100%;
+            min-height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
+            padding-bottom: var(--bottom-nav-height);
+            background-color: #000000;
+            position: relative;
         }
 
         .screen-view {
             padding: 24px;
-            min-height: 100vh;
+            min-height: calc(100vh - var(--header-height) - var(--bottom-nav-height));
             background-color: #000000;
         }
 
@@ -430,7 +407,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Retaining original vivid colors */
             filter: none !important;
         }
 
@@ -527,7 +503,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Retaining original vivid colors */
             filter: none !important;
         }
 
@@ -967,11 +942,8 @@
 
     <header class="yt-header" id="ytHeader">
         <div class="header-left">
-            <button class="menu-btn" onclick="toggleSidebar()">
-                <img class="menu-icon" src="https://img.icons8.com/?size=100&id=36389&format=png&color=FFFFFF" alt="Menu">
-            </button>
             <a class="sidebar-brand" onclick="switchScreen('home')">
-                <img class="cloud-icon" src="https://github.com/school-rgb/frutiger-logo/blob/main/Screenshot%202026-09-20%2010.27.39%20PM-inverted.png?raw=true" alt="Frutianime Logo">
+                <img class="cloud-icon" src="https://img.icons8.com/?size=100&id=RHbEtcSp-frn&format=png&color=FFFFFF" alt="Frutianime Logo">
                 <span class="sidebar-brand-text">Frutianime</span>
             </a>
         </div>
@@ -997,20 +969,6 @@
     </header>
 
     <div id="appLayout" class="app-layout">
-        <div id="sidebar" class="sidebar">
-            <div class="nav-menu">
-                <button class="nav-item active" id="navHome" onclick="switchScreen('home')">
-                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=1iF9PyJ2Thzo&format=png&color=FFFFFF" alt="Home"> Home
-                </button>
-                <button class="nav-item" id="navSearch" onclick="handleExploreClick()">
-                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=BogAPe6WjbSc&format=png&color=FFFFFF" alt="Explore"> Explore
-                </button>
-                <button class="nav-item" id="navMyList" onclick="switchScreen('mylist')">
-                    <img class="nav-icon" src="https://img.icons8.com/?size=100&id=83134&format=png&color=FFFFFF" alt="Library"> Watch Later
-                </button>
-            </div>
-        </div>
-
         <div id="mainViewport" class="main-viewport">
 
             <div id="homeScreen" class="screen-view">
@@ -1134,6 +1092,21 @@
         </div>
     </div>
 
+    <nav id="bottomNav" class="bottom-nav">
+        <button class="nav-item active" id="navHome" onclick="switchScreen('home')">
+            <img class="nav-icon" src="https://img.icons8.com/?size=100&id=1iF9PyJ2Thzo&format=png&color=FFFFFF" alt="Home">
+            <span>Home</span>
+        </button>
+        <button class="nav-item" id="navSearch" onclick="handleExploreClick()">
+            <img class="nav-icon" src="https://img.icons8.com/?size=100&id=BogAPe6WjbSc&format=png&color=FFFFFF" alt="Explore">
+            <span>Explore</span>
+        </button>
+        <button class="nav-item" id="navMyList" onclick="switchScreen('mylist')">
+            <img class="nav-icon" src="https://img.icons8.com/?size=100&id=83134&format=png&color=FFFFFF" alt="Library">
+            <span>Watch Later</span>
+        </button>
+    </nav>
+
     <div id="playerModal" class="player-modal">
         <button class="player-close-btn" onclick="closePlayer()">Close Player</button>
         <div class="player-wrapper">
@@ -1174,13 +1147,6 @@
                 }
             });
         });
-
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
-            const viewport = document.getElementById('mainViewport');
-            viewport.classList.toggle('full-width');
-        }
 
         function showSearchDropdown() {
             const dropdown = document.getElementById('searchDropdownMenu');
@@ -1548,9 +1514,8 @@
 
         function switchScreen(screenName) {
             document.getElementById('ytHeader').classList.remove('hidden');
-            document.getElementById('sidebar').classList.remove('hidden');
+            document.getElementById('bottomNav').classList.remove('hidden');
             document.getElementById('appLayout').classList.remove('no-header');
-            document.getElementById('mainViewport').classList.remove('full-width');
             document.getElementById('searchDropdownMenu').style.display = 'none';
 
             document.getElementById('homeScreen').style.display = 'none';
@@ -1642,9 +1607,8 @@
             activeSeasonIndex = 0;
 
             document.getElementById('ytHeader').classList.add('hidden');
-            document.getElementById('sidebar').classList.add('hidden');
+            document.getElementById('bottomNav').classList.add('hidden');
             document.getElementById('appLayout').classList.add('no-header');
-            document.getElementById('mainViewport').classList.add('full-width');
             document.getElementById('searchDropdownMenu').style.display = 'none';
 
             document.getElementById('homeScreen').style.display = 'none';
